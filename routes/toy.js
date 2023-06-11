@@ -1,7 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const router = express.Router();
-const { auth } = require("../middlewares/auth");
+const { auth } = require("../Middalewars/auth");
 const { ToysModel, toysValid } = require("../models/toysModel")
 
 //http://localhost:3000/toys
