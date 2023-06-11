@@ -3,7 +3,7 @@ const path = require("path");
 const http = require("http");
 const cors = require("cors");
 const {routesInit} = require("./routes/config_routes")
-require("./db/mongoconnect");
+require("./db/mongoConnect");
 
 const app = express();
 
