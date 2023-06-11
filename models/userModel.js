@@ -1,44 +1,41 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
-const jwt = require("jsonwebtoken");
+const jwt=require("jsonwebtoken");
 const {config} = require("../config/secret")
 
-let userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   name:String,
   email:String,
   password:String,
-  role:{
-    type:String,default:"user"
+  role: {
+    type: String, default: "user"
   },
   date_created:{
-    type:Date , default:Date.now()
+      type : Date , default : Date.now()
   }
 })
-
 exports.UserModel = mongoose.model("users",userSchema);
 
-
-exports.genToken = (_user_id,role) => {
-  let token = jwt.sign({_user_id,role},config.tokenSecret,{expiresIn:"60mins"});
+exports.genToken=(_id,role)=>{
+  let token=jwt.sign({_id,role},config.tokenSecret,{expiresIn:"60mins"});
   return token;
 }
 
-exports.validUser = (_reqBody) => {
+// הרשמה
+exports.userValid = (_bodyValid) =>{
   let joiSchema = Joi.object({
-    name:Joi.string().min(2).max(99).required(),
-    email:Joi.string().min(2).max(99).email().required(),
-    password:Joi.string().min(3).max(99).required(),
-    role:Joi.string().min(2).max(99)
+      name: Joi.string().min(2).max(50).required(),
+      email: Joi.string().min(2).max(100).email().required(),
+      password: Joi.string().min(6).max(50).required(),
+      role: Joi.string().min(2).max(50),
   })
-
-  return joiSchema.validate(_reqBody);
+  return joiSchema.validate(_bodyValid);
 }
-
-exports.validLogin = (_reqBody) => {
+// התחברות
+exports.loginValid = (_bodyValid) =>{
   let joiSchema = Joi.object({
-    email:Joi.string().min(2).max(99).email().required(),
-    password:Joi.string().min(3).max(99).required()
+      email: Joi.string().min(2).max(100).email().required(),
+      password: Joi.string().min(6).max(50).required(),
   })
-
-  return joiSchema.validate(_reqBody);
+  return joiSchema.validate(_bodyValid);
 }

@@ -1,20 +1,22 @@
-const express=require("express");
-const path=require("path");
-const http=require("http");
-const cors=require("cors");
+const express = require("express");
+const path = require("path");
+const http = require("http");
+const cors = require("cors");
+const {routesInit} = require("./routes/config_routes")
+require("./db/mongoconnect");
 
-const {routesInit}=require("./routes/config_routes")
- require("./db/mongoConnect");
+const app = express();
 
-const app=express();
-app.use(cors())
+// נותן גישה לכל הדומיינים לגשת לשרת שלנו
+app.use(cors());
+// כדי שנוכל לקבל באדי
 app.use(express.json());
-
-app.use(express.static(path.join(__dirname,"public")));
+// הגדרת תקיית הפאבליק כתקייה ראשית
+app.use(express.static(path.join(__dirname,"public")))
 
 routesInit(app);
 
-const server=http.createServer(app);
+const server = http.createServer(app);
 
-let port=process.env.PORT||3000
+let port = process.env.PORT || 3000
 server.listen(port);

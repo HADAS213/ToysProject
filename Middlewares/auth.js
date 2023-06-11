@@ -1,11 +1,10 @@
-// const { config } = require("dotenv");
 const jwt = require("jsonwebtoken");
-const {config}= require("../config/secret")
+const {config} = require("../config/secret")
 
 // פונקצית מידל וואר שבודקת טוקן
 // middleware
 exports.auth = async(req,res,next) => {
-  let token = req.header("x-api-key");
+  let token = req.header("x-api-key")
   if(!token){
     return res.status(401).json({msg:"You need to send token to this endpoint url 2222"})
   }
@@ -15,7 +14,7 @@ exports.auth = async(req,res,next) => {
     // דואג להעיבר את המאפיין של הטוקן דאטא לפונקציה הבאה בשרשור
     // שאנחנו מזמנים בנקסט ככה שתיהיה חשופה למידע
     // במקרה הזה האיי די שפענחנו מהטוקן
-    req.tokenData = decodeToken
+    req.tokenData = decodeToken;
     // next() -> אם הכל בסדר לעבור לפונקציה הבאה שרשור
     next()
   }
@@ -23,21 +22,26 @@ exports.auth = async(req,res,next) => {
    return res.status(401).json({msg:"Token not valid or expired 22222"})
   }
 }
-exports.authAdmin=(req,res,next)=>{
-  let token=req.header("x-api-kry");
+exports.authAdmin = (req,res,next) => {
+  let token = req.header("x-api-key");
   if(!token){
-    return res.status(401).json({msg:"You need send token"})
+    return res.status(401).json({msg:"You need to send token to this endpoint url"})
   }
   try{
-    let decodeToken=jwt.verify(token,config.tokenSecret);
-    if(decodeToken.role!="admin"){
-      return res.status(401).json({msg:"Token invalid or wxpired, code: 43"});
+    let decodeToken = jwt.verify(token,config.tokenSecret);
+    // check if the role in the token of admin
+    if(decodeToken.role != "admin"){
+      return res.status(401).json({msg:"Token invalid or expired, code: 43"})
     }
-    req.tokenData=decodeToken;
-    next()
+   
+    // add to req , so the next function will recognize
+    // the tokenData/decodeToken
+    req.tokenData = decodeToken;
+
+    next();
   }
   catch(err){
     console.log(err);
-    return res.status(401).json({msg:"Token invalid or expired, log in again"})
+    return res.status(401).json({msg:"Token invalid or expired, log in again "})
   }
 }
